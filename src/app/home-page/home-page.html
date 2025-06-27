@@ -1,0 +1,11 @@
+<section>
+    <img src="C:\Users\HP\Documents\Angular Projects\shopping_app\src\assets\logo.png" alt="logo">
+    <form>
+        <input type="text" placeholder="Filter">
+        <button class="primary" type="button">Search</button>
+    </form>
+</section>
+<section class="results">
+    <app-product *ngFor="let productProperties of productPropertyList" 
+    [productProperties]="productProperties"></app-product>
+</section>
