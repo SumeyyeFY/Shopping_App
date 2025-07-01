@@ -18,6 +18,11 @@
             "assets": [
               {
                 "glob": "**/*",
+                "input": "src/assets/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
                 "input": "public"
               }
             ],
@@ -69,6 +74,11 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "C:/Users/HP/Documents/Angular Projects/shopping_app/src/assets/",
+                "output": "/assets"
+              },
               {
                 "glob": "**/*",
                 "input": "public"
