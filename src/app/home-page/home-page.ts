@@ -15,8 +15,24 @@ import { RouterModule } from '@angular/router';
 export class HomePage {
   productPropertyList: ProductProperties[] = [];
   productInfo: ProductInfo = inject(ProductInfo);
+  filteredResults: ProductProperties[] = [];
 
   constructor() {
     this.productPropertyList = this.productInfo.getAllProductProperties();
+    this.filteredResults = this.productPropertyList;
+  }
+
+  filterResults(text: string) {
+    if(!text) this.filteredResults = this.productPropertyList;
+
+    this.filteredResults = this.productPropertyList.filter(
+      product => product?.name.toLowerCase().includes(text.toLowerCase()));
+    
+    console.log(text + " filtered");
+  } 
+
+  filterByRange(max: number, min: number=0){
+    this.filteredResults = this.productPropertyList.filter(
+      product => product?.price < max && product?.price > min)
   }
 }

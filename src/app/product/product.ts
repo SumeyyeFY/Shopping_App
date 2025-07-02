@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input , inject} from '@angular/core';
 import { ProductProperties } from '../product-properties';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ChartOperations } from '../chart-operations';
 
 @Component({
   selector: 'app-product',
@@ -11,5 +12,6 @@ import { RouterModule } from '@angular/router';
 })
 export class Product {
   @Input() productProperties!:ProductProperties;
+  chartOperator: ChartOperations = inject(ChartOperations);
   constructor() {}
 }

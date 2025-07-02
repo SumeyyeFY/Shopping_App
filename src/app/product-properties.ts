@@ -2,7 +2,7 @@ export interface ProductProperties {
     id: Number,
     photo: string,
     name: string,
-    brand: string,
-    price: Number,
+    shop: string,
+    price: number,
     avaliableNumber: Number
 }

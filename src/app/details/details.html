@@ -1,8 +1,11 @@
+<section>
+    <a [routerLink]="['']">Home Page</a>
+</section>
 <article>
     <img class="product-photo" [src]="productProperty?.photo" alt="Photo of {{productProperty?.name}}">
     <section class="product-description">
         <h2 class="product-name">{{productProperty?.name}}</h2>
-        <p class="product-brand">{{productProperty?.brand}}</p>
+        <a [routerLink]="['/shop', productProperty?.shop]"> {{productProperty?.shop}} </a>
     </section>
     <section class="product-features">
         <h3 class="price">Price: {{productProperty?.price}}$</h3>
@@ -11,7 +14,11 @@
         </ul>
     </section>
     <section class="add-to-chart-area">
-        <p class="heading">Add to chart</p>
-        <button class="primary" type="button">Add</button>
+        <form>
+            <p class="heading">Add to chart</p>
+            <button class="primary" type="button" (click)="chartOperator.addToChart(productProperty?.id!)">Add</button>
+            <button class="primary" type="button"
+            (click)="chartOperator.removeFromChart(productProperty?.id!)">Remove</button>
+        </form>
     </section>
 </article>

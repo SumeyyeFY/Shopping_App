@@ -10,7 +10,7 @@ export class ProductInfo {
       "id": 0,
       "photo": "/assets/sneakers.jpg",
       "name": "Sneakers",
-      "brand": "New Shoes",
+      "shop": "New Shoes",
       "price": 100,
       "avaliableNumber": 1
     },
@@ -18,7 +18,7 @@ export class ProductInfo {
       "id": 1,
       "photo": "/assets/dress.jpg",
       "name": "Dress",
-      "brand": "Clothing com",
+      "shop": "Clothing com",
       "price": 200,
       "avaliableNumber": 1
     },
@@ -26,7 +26,7 @@ export class ProductInfo {
       "id": 2,
       "photo": "/assets/heels.jpg",
       "name": "Heels",
-      "brand": "New Shoes",
+      "shop": "New Shoes",
       "price": 100,
       "avaliableNumber": 1
     },
@@ -34,7 +34,7 @@ export class ProductInfo {
       "id": 3,
       "photo": "/assets/skirt.jpg",
       "name": "Skirt",
-      "brand": "Clothing com",
+      "shop": "Clothing com",
       "price": 200,
       "avaliableNumber": 1
     },
@@ -42,7 +42,7 @@ export class ProductInfo {
       "id": 4,
       "photo": "/assets/tshirt.jpg",
       "name": "Tshirt",
-      "brand": "Clothing com",
+      "shop": "Clothing com",
       "price": 200,
       "avaliableNumber": 1
     }
@@ -55,5 +55,11 @@ export class ProductInfo {
 
   getProductPropertiesById(id: Number) : ProductProperties | undefined {
     return this.productPropertiesList.find(productProperty => productProperty.id === id);
+  }
+
+  getProductPropertiesByshop(shop: string) : ProductProperties[] | undefined {
+    return this.productPropertiesList.filter(
+      product => product?.shop.toLowerCase().includes(shop.toLowerCase())
+    );
   }
 }
