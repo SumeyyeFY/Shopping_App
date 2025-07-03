@@ -1,6 +1,4 @@
-<section>
-    <a [routerLink]="['']">Home Page</a>
-</section>
+<h2> {{shopName}} </h2>
 <section class="products">
     <app-product *ngFor="let productProperty of productPropertiesList" 
     [productProperties]="productProperty"></app-product>

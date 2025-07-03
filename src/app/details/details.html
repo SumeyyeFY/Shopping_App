@@ -1,6 +1,3 @@
-<section>
-    <a [routerLink]="['']">Home Page</a>
-</section>
 <article>
     <img class="product-photo" [src]="productProperty?.photo" alt="Photo of {{productProperty?.name}}">
     <section class="product-description">
@@ -10,15 +7,26 @@
     <section class="product-features">
         <h3 class="price">Price: {{productProperty?.price}}$</h3>
         <ul>
-            <li>Last {{productProperty?.avaliableNumber}} item</li>
+            <li *ngIf="productProperty!.avaliableNumber > 0">Last {{productProperty?.avaliableNumber}} item</li>
+            <li *ngIf="productProperty!.avaliableNumber <= 0">Out of stock</li>
         </ul>
     </section>
     <section class="add-to-chart-area">
         <form>
             <p class="heading">Add to chart</p>
-            <button class="primary" type="button" (click)="chartOperator.addToChart(productProperty?.id!)">Add</button>
-            <button class="primary" type="button"
-            (click)="chartOperator.removeFromChart(productProperty?.id!)">Remove</button>
+            <button class="primary" type="button" *ngIf="productProperty!.avaliableNumber > 0 
+                    && !chartOperator.purchaseMap.get(productProperty?.id!)"
+                (click)="chartOperator.addToChart(productProperty?.id!)">Add</button>
+                
+            <form *ngIf="chartOperator.purchaseMap.get(productProperty?.id!)">
+                <div class="button-container">
+                    <button class="primary" type="button" (click)="chartOperator.addToChart(productProperty?.id!)"> +
+                    </button>
+                    <p class="number">[ {{chartOperator.purchaseMap.get(productProperty?.id!)}} ]</p>
+                    <button class="primary" type="button"
+                        (click)="chartOperator.removeFromChart(productProperty?.id!)"> - </button>
+                </div>
+            </form>
         </form>
     </section>
 </article>

@@ -3,6 +3,8 @@ import { HomePage } from './home-page/home-page';
 import { Details } from './details/details';
 import { Chart } from './chart/chart';
 import { Shop } from './shop/shop';
+import { PreCheckout } from './pre-checkout/pre-checkout';
+import { GuestCheckout } from './guest-checkout/guest-checkout';
 
 export const routes: Routes = [
     {
@@ -24,5 +26,15 @@ export const routes: Routes = [
         path: "shop/:shop",
         component: Shop,
         title: 'Shop Page'
+    },
+    {
+        path: "pre-checkout",
+        component: PreCheckout,
+        title: "Pre Checkout Page"
+    },
+    {
+        path: "guest-checkout",
+        component: GuestCheckout,
+        title: "Guest Checkout Page"
     }
 ];

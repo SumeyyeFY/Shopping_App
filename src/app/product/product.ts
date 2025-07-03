@@ -13,5 +13,6 @@ import { ChartOperations } from '../chart-operations';
 export class Product {
   @Input() productProperties!:ProductProperties;
   chartOperator: ChartOperations = inject(ChartOperations);
+
   constructor() {}
 }

@@ -4,5 +4,5 @@ export interface ProductProperties {
     name: string,
     shop: string,
     price: number,
-    avaliableNumber: Number
+    avaliableNumber: number
 }

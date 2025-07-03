@@ -18,7 +18,10 @@ export class HomePage {
   filteredResults: ProductProperties[] = [];
 
   constructor() {
-    this.productPropertyList = this.productInfo.getAllProductProperties();
+    this.productPropertyList = this.productInfo.getAllProductProperties().filter(
+      product => product.avaliableNumber > 0
+    );
+    
     this.filteredResults = this.productPropertyList;
   }
 

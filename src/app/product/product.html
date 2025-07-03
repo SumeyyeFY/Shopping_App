@@ -2,7 +2,21 @@
     <img class="product-photo" [src]="productProperties.photo" alt="Photo of {{productProperties.name}}">
     <h2 class="product-name">{{productProperties.name}}</h2>
     <p class="product-shop-shop">{{productProperties.shop}}</p>
-    <p class="product-price">{{productProperties.price}}$</p>
-    <button class="primary" type="button" (click)="chartOperator.addToChart(productProperties.id!)">Add</button>
+    <p *ngIf="productProperties.avaliableNumber > 0" class="product-price">{{productProperties.price}}$</p>
+    <p *ngIf="productProperties.avaliableNumber <= 0" class="product-price">- Out of stock</p>
+
+    <button class="primary" type="button" *ngIf="productProperties!.avaliableNumber > 0 
+                    && !chartOperator.purchaseMap.get(productProperties?.id!)"
+        (click)="chartOperator.addToChart(productProperties.id!)">Add</button>
+
+    <form *ngIf="chartOperator.purchaseMap.get(productProperties?.id!)">
+        <div class="button-container">
+            <button class="primary" type="button" (click)="chartOperator.addToChart(productProperties.id!)"> + </button>
+            <p class="number">[ {{chartOperator.purchaseMap.get(productProperties.id!)}} ]</p>
+            <button class="primary" type="button"
+                (click)="chartOperator.removeFromChart(productProperties.id!)"> - </button>
+        </div>
+    </form>
+
     <a [routerLink]="['/details', productProperties.id]"> Go to product</a>
 </section>

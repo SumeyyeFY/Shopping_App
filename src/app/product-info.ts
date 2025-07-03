@@ -12,7 +12,7 @@ export class ProductInfo {
       "name": "Sneakers",
       "shop": "New Shoes",
       "price": 100,
-      "avaliableNumber": 1
+      "avaliableNumber": 10
     },
     {
       "id": 1,
@@ -20,7 +20,7 @@ export class ProductInfo {
       "name": "Dress",
       "shop": "Clothing com",
       "price": 200,
-      "avaliableNumber": 1
+      "avaliableNumber": 5
     },
     {
       "id": 2,
@@ -28,7 +28,7 @@ export class ProductInfo {
       "name": "Heels",
       "shop": "New Shoes",
       "price": 100,
-      "avaliableNumber": 1
+      "avaliableNumber": 7
     },
     {
       "id": 3,
@@ -36,7 +36,7 @@ export class ProductInfo {
       "name": "Skirt",
       "shop": "Clothing com",
       "price": 200,
-      "avaliableNumber": 1
+      "avaliableNumber": 4
     },
     {
       "id": 4,
@@ -44,7 +44,7 @@ export class ProductInfo {
       "name": "Tshirt",
       "shop": "Clothing com",
       "price": 200,
-      "avaliableNumber": 1
+      "avaliableNumber": 15
     }
   ];
   constructor() { }

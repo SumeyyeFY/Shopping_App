@@ -13,13 +13,13 @@ import { ChartOperations } from '../chart-operations';
 })
 export class Chart {
   chartOperator: ChartOperations = inject(ChartOperations);
-  addedProductPropertiess: ProductProperties[] = [];
+  addedProductProperties: ProductProperties[] = [];
   chartTotal: Number;
   numberOfProducts: Number;
 
   constructor() {
     this.chartTotal = this.chartOperator.chartTotal;
     this.numberOfProducts = this.chartOperator.numberOfProducts;
-    this.addedProductPropertiess = this.chartOperator.addedProductPropertiess;
+    this.addedProductProperties = this.chartOperator.addedProductProperties;
   }
 }

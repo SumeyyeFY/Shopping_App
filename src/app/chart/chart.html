@@ -1,14 +1,17 @@
+<h2>My Chart</h2>
 <section class="total-operations">
     <button class="primary" type="button" (click)="chartOperator.removeAllProducts()">Clear the Chart</button>
-    <a [routerLink]="['']">Home Page</a>
 </section>
 <section class="stats">
-    <p class="number-of-products">Number of products: {{numberOfProducts}} | 
+    <p class="number-of-products">Number of products: {{numberOfProducts}} |
         Chart total: {{chartTotal}}$ </p>
+    <a *ngIf="numberOfProducts != 0" [routerLink]="['/pre-checkout']">Proceed to checkout</a>
 </section>
 <section class="chart-products">
-    <app-product *ngFor="let productProperties of addedProductPropertiess" [productProperties]="productProperties">
-        <button class="primary" type="button" 
-        (click)="chartOperator.removeFromChart(productProperties.id)">Remove</button>
+    <app-product *ngFor="let productProperties of addedProductProperties" [productProperties]="productProperties">
+        <form>
+            <button class="primary" type="button"
+                (click)="chartOperator.removeFromChart(productProperties.id)">Remove</button>
+        </form>
     </app-product>
 </section>
