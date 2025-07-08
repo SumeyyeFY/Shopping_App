@@ -1,5 +1,5 @@
 export interface ProductProperties {
-    id: Number,
+    id: number,
     photo: string,
     name: string,
     shop: string,

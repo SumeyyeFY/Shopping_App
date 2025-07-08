@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Product } from '../product/product';
 import { CommonModule } from '@angular/common';
 import { ProductProperties } from '../product-properties';
@@ -8,21 +8,27 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
-  imports: [CommonModule, Product, Chart, RouterModule],
+  imports: [CommonModule, Product, RouterModule],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css'
 })
-export class HomePage {
+export class HomePage implements OnInit{
   productPropertyList: ProductProperties[] = [];
-  productInfo: ProductInfo = inject(ProductInfo);
   filteredResults: ProductProperties[] = [];
 
-  constructor() {
-    this.productPropertyList = this.productInfo.getAllProductProperties().filter(
-      product => product.avaliableNumber > 0
-    );
-    
-    this.filteredResults = this.productPropertyList;
+  constructor(private productInfo: ProductInfo, private cdr: ChangeDetectorRef) {
+
+  }
+
+  ngOnInit(){
+    this.productInfo.getAllProductProperties().subscribe(
+      (data) => {
+        this.productPropertyList = data;
+        this.filteredResults = [...this.productPropertyList];
+        this.filteredResults = this.filteredResults.filter(product => product.avaliableNumber > 0);
+        this.cdr.detectChanges();
+      }
+    )
   }
 
   filterResults(text: string) {

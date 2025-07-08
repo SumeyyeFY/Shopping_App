@@ -15,7 +15,7 @@ export class Checkout {
         "$ purchase by the card with number " + cardNumber);
       alert("Thanks for payment! ");
 
-      this.chartOperator.removeAllProducts();
+      this.chartOperator.buyProducts();
     }else if (this.chartOperator.numberOfProducts <= 0){
       alert("Chart is empty! ");
     } else {

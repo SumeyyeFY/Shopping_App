@@ -1,0 +1,44 @@
+{
+  "products": [
+    {
+      "id": "0",
+      "photo": "/assets/sneakers.jpg",
+      "name": "Sneakers",
+      "shop": "New Shoes",
+      "price": 100,
+      "avaliableNumber": 91
+    },
+    {
+      "id": "2",
+      "photo": "/assets/dress.jpg",
+      "name": "Dress",
+      "shop": "Clothing com",
+      "price": 200,
+      "avaliableNumber": 100
+    },
+    {
+      "id": "3",
+      "photo": "/assets/heels.jpg",
+      "name": "Heels",
+      "shop": "New Shoes",
+      "price": 100,
+      "avaliableNumber": 100
+    },
+    {
+      "id": "4",
+      "photo": "/assets/skirt.jpg",
+      "name": "Skirt",
+      "shop": "Clothing com",
+      "price": 200,
+      "avaliableNumber": 100
+    },
+    {
+      "id": "5",
+      "photo": "/assets/tshirt.jpg",
+      "name": "Tshirt",
+      "shop": "Clothing com",
+      "price": 200,
+      "avaliableNumber": 50
+    }
+  ]
+}

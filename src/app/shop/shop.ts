@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Product } from '../product/product';
@@ -11,14 +11,22 @@ import { ProductInfo } from '../product-info';
   templateUrl: './shop.html',
   styleUrl: './shop.css'
 })
-export class Shop {
+export class Shop implements OnInit{
   route: ActivatedRoute = inject(ActivatedRoute);
   productInfo: ProductInfo = inject(ProductInfo);
   shopName: string;
   productPropertiesList: ProductProperties[] = [];
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.shopName = this.route.snapshot.params["shop"];
-    this.productPropertiesList = this.productInfo.getProductPropertiesByshop(this.shopName)!;
+  }
+
+  ngOnInit(): void {
+      this.productInfo.getAllProductProperties().subscribe(
+        (data: ProductProperties[]) => {
+          this.productPropertiesList = data.filter(data => data.shop === this.shopName);
+          this.cdr.detectChanges();
+        }
+      )
   }
 }
