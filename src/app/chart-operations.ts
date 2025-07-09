@@ -1,7 +1,7 @@
 import { Injectable, inject, OnInit, Input } from '@angular/core';
 import { ProductProperties } from './product-properties';
 import { ProductInfo } from './product-info';
-import { map } from 'rxjs';
+import { Observable, switchMap, map, forkJoin } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class ChartOperations implements OnInit {
     if (this.productId) {
       this.productInfo.getProductPropertiesById(this.productId).subscribe(
         (data) => {
-          data = data;
+          this.product = data;
         }
       )
     }
@@ -90,6 +90,87 @@ export class ChartOperations implements OnInit {
       }
     });
     this.product = undefined;
+  }
+
+  /**
+   * Adds quantities from a Map (productId -> quantityToReturn) back to product stock.
+   *
+   * @param itemsToReturn A Map where key is productId and value is the quantity to add back.
+   * @returns An Observable that completes when all updates are processed.
+   */
+  addQuantitiesToStock(): Observable<ProductProperties[]> {
+    const updateObservables: Observable<ProductProperties | undefined>[] = [];
+
+    this.purchaseMap.forEach((quantityToReturn, productId) => {
+      const updateObservable = this.productInfo.getProductPropertiesById(productId).pipe(
+        switchMap(product => {
+          if (product) {
+            const newQuantity = product.avaliableNumber + quantityToReturn;
+            const updatedProduct: ProductProperties = { ...product, avaliableNumber: newQuantity };
+            return this.productInfo.updateProduct(updatedProduct);
+          } else {
+            console.warn(`Product with ID ${productId} not found. Cannot add quantity back to stock.`);
+            return new Observable<ProductProperties | undefined>(observer => {
+              observer.next(undefined);
+              observer.complete();
+            });
+          }
+        })
+      );
+      updateObservables.push(updateObservable);
+    });
+
+    console.log("cleared");
+    return forkJoin(updateObservables).pipe(
+      map(results => results.filter(p => p !== undefined) as ProductProperties[]) // Filter out undefined results
+    );
+  }
+
+  removeAllProducts() { //Returns back to stock
+    const keys = Array.from(this.purchaseMap.keys());
+    var length = keys.length;
+
+    this.purchaseMap.forEach((quantity, id) => {
+      if (id) {
+        console.log("id: " + id);
+        console.log("quantity: " + quantity);
+        this.productInfo.getProductPropertiesById(id).subscribe(
+          (data) => {
+            if (data) {
+              this.product = data;
+              console.log("data: " + data);
+              console.log("product: " + this.product);
+
+              if (this.product) {
+                console.log("avNum befotre: " + this.product.avaliableNumber);
+                console.log("quantity: " + quantity);
+                const newNumber = this.product.avaliableNumber += quantity;
+                console.log("avNum after: " + this.product.avaliableNumber);
+
+                const dataToUpdate: Partial<ProductProperties> = {
+                  avaliableNumber: newNumber
+                };
+
+                var avNumAfter
+                this.productInfo.updateDataItem(this.product.id, dataToUpdate).subscribe(
+                  (response) => {
+                    avNumAfter = response.avaliableNumber;
+                    console.log("updated: " + avNumAfter);
+                  }
+                )
+              }
+            }
+          }
+        )
+      }
+    })
+
+    this.addedProductProperties = [];
+    this.chartTotal = 0;
+    this.numberOfProducts = 0;
+    this.purchaseMap.clear();
+    console.log("All removed");
+
   }
 
   buyProducts() {

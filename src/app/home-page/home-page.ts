@@ -1,10 +1,10 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Product } from '../product/product';
 import { CommonModule } from '@angular/common';
 import { ProductProperties } from '../product-properties';
 import { ProductInfo } from '../product-info';
-import { Chart } from "../chart/chart";
 import { RouterModule } from '@angular/router';
+import { Observable, Subscription, switchMap, interval, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
@@ -12,23 +12,43 @@ import { RouterModule } from '@angular/router';
   templateUrl: './home-page.html',
   styleUrl: './home-page.css'
 })
-export class HomePage implements OnInit{
+export class HomePage implements OnInit, OnDestroy{
+  intervalPeriod: number;
+  products$: Observable<ProductProperties[] | []>
   productPropertyList: ProductProperties[] = [];
   filteredResults: ProductProperties[] = [];
+  subscription: Subscription;
 
   constructor(private productInfo: ProductInfo, private cdr: ChangeDetectorRef) {
+    this.intervalPeriod = 500;
+    this.products$ = this.productInfo.getAllProductProperties();
 
-  }
-
-  ngOnInit(){
-    this.productInfo.getAllProductProperties().subscribe(
+    this.subscription = this.products$.subscribe(
       (data) => {
         this.productPropertyList = data;
         this.filteredResults = [...this.productPropertyList];
         this.filteredResults = this.filteredResults.filter(product => product.avaliableNumber > 0);
-        this.cdr.detectChanges();
+      });
+  }
+
+  ngOnInit(){
+    this.products$ = interval(this.intervalPeriod).pipe(
+      startWith(0),
+      switchMap(() => this.productInfo.getAllProductProperties())
+    );
+
+    this.subscription = this.products$.subscribe(
+      (data) => {
+        this.productPropertyList = data;
+        this.filteredResults = [...this.productPropertyList];
+        this.filteredResults = this.filteredResults.filter(product => product.avaliableNumber > 0);
+      });
+  }
+
+  ngOnDestroy(): void {
+      if(this.subscription) {
+        this.subscription.unsubscribe();
       }
-    )
   }
 
   filterResults(text: string) {

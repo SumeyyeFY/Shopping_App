@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductProperties } from '../product-properties';
@@ -11,31 +11,23 @@ import { ChartOperations } from '../chart-operations';
   templateUrl: './chart.html',
   styleUrl: './chart.css'
 })
-export class Chart{
+export class Chart implements OnInit{
   chartOperator: ChartOperations = inject(ChartOperations);
-  //addedProductProperties: ProductProperties[] = [];
+  addedProductProperties: ProductProperties[] = [];
+  addedIds: number[] = [];
   chartTotal: number;
   numberOfProducts: number;
 
   constructor(private cdr: ChangeDetectorRef) {
     this.chartTotal = this.chartOperator.chartTotal;
     this.numberOfProducts = this.chartOperator.numberOfProducts;
-    //this.addedProductProperties = this.chartOperator.addedProductProperties;
+    this.addedProductProperties = this.chartOperator.addedProductProperties;
   }
 
-  removeAllProducts() { //Returns back to stock
-    const keyIterator = this.chartOperator.purchaseMap.keys();
-    for (const id of keyIterator) {
-      var quantity = (this.chartOperator.purchaseMap.get(id)) as number;
-      for (var i = quantity; i > 0; i--){
-        this.chartOperator.removeFromChart(id);
-        this.cdr.detectChanges(); 
-      }
-    } 
-    this.chartOperator.addedProductProperties = [];
-    this.chartOperator.chartTotal = 0;
-    this.chartOperator.numberOfProducts = 0;
-    this.chartOperator.purchaseMap.clear();
-    console.log("All removed");
+  ngOnInit(): void {
+    this.chartTotal = this.chartOperator.chartTotal;
+    this.numberOfProducts = this.chartOperator.numberOfProducts;
+    this.addedProductProperties = this.chartOperator.addedProductProperties;
+      this.cdr.detectChanges();  
   }
 }

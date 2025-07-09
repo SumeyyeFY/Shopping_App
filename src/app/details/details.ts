@@ -1,9 +1,10 @@
-import { Component, Input, inject, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, Input, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProductInfo } from '../product-info';
 import { ProductProperties } from '../product-properties';
 import { ChartOperations } from '../chart-operations';
+import { Observable, Subscription, switchMap, interval, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -11,48 +12,41 @@ import { ChartOperations } from '../chart-operations';
   templateUrl: './details.html',
   styleUrl: './details.css'
 })
-export class Details implements OnInit{
+export class Details implements OnInit, OnDestroy{
   @Input() productId: number;
-  @ViewChild('defButton') myButtonRef!: ElementRef<HTMLButtonElement>;
+  intervalPeriod = 500;
   route: ActivatedRoute = inject(ActivatedRoute);
   productInfo = inject(ProductInfo);
   chartOperator = inject(ChartOperations);
+  product$: Observable<ProductProperties | undefined>;
   productProperty: ProductProperties | undefined;
-  cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  dataSubscription: Subscription;
 
-  constructor(private renderer:Renderer2) {
+  constructor() {
     this.productId = Number(this.route.snapshot.params["id"]);
-    this.productInfo.getProductPropertiesById(this.productId).subscribe({
-      next: (data) => {
-        this.productProperty = data
-        this.cdr.detectChanges();
-      }
+    this.product$ = this.productInfo.getDataById(this.productId);
+
+    this.dataSubscription = this.product$.subscribe(
+      (data) => {
+      this.productProperty = data;
     });
   }
 
   ngOnInit(): void {
-      this.route.paramMap.subscribe(params => {
-        const productId = Number(params.get('id'));
-        if(productId){
-          this.productInfo.getProductPropertiesById(+ productId).subscribe(
-            (data) => {
-              this.productProperty = data;
-              this.cdr.detectChanges();
-              console.log(data);
-            }
-          )
-        }
-      })
+    this.product$ = interval(this.intervalPeriod).pipe( 
+      startWith(0), 
+      switchMap(() => this.productInfo.getDataById(this.productId))
+    );
+
+    this.dataSubscription = this.product$.subscribe(
+      (data) => {
+      this.productProperty = data;
+    });
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.renderer.selectRootElement(this.myButtonRef.nativeElement).click();
-      console.log('Button clicked programmatically via Renderer2');
-    }, 10);
-  }
-
-  onButtonClick() {
-    console.log('Button was actually clicked (or programmatically triggered)');
+  ngOnDestroy(): void {
+      if (this.dataSubscription) {
+        this.dataSubscription.unsubscribe();
+    }
   }
 }

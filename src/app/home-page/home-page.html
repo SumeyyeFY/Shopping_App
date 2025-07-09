@@ -1,4 +1,4 @@
-<section>
+<section *ngIf="products$ | async as productProperties">
     <form>
         <input type="text" placeholder="Filter" #filter>
         <button class="primary" type="button" 
