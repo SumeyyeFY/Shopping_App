@@ -1,26 +1,24 @@
-import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Product } from '../product/product';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router,RouterModule } from '@angular/router';
 import { ProductProperties } from '../product-properties';
-import { ProductInfo } from '../product-info';
-import { FilterPage } from '../filter-page/filter-page';
-import { RouterModule } from '@angular/router';
 import { Observable, Subscription, switchMap, interval, startWith } from 'rxjs';
+import { ProductInfo } from '../product-info';
 
 @Component({
-  selector: 'app-home-page',
-  imports: [CommonModule, Product, RouterModule],
-  templateUrl: './home-page.html',
-  styleUrl: './home-page.css'
+  selector: 'app-filter-page',
+  imports: [CommonModule, RouterModule],
+  templateUrl: './filter-page.html',
+  styleUrl: './filter-page.css'
 })
-export class HomePage implements OnInit, OnDestroy{
+export class FilterPage {
   intervalPeriod: number;
   products$: Observable<ProductProperties[] | []>
   productPropertyList: ProductProperties[] = [];
   filteredResults: ProductProperties[] = [];
   subscription: Subscription;
 
-  constructor(private productInfo: ProductInfo) {
+  constructor(private router: Router, private productInfo: ProductInfo) {
     this.intervalPeriod = 500;
     this.products$ = this.productInfo.getAllProductProperties();
 
@@ -52,17 +50,18 @@ export class HomePage implements OnInit, OnDestroy{
       }
   }
 
-  filterResults(text: string) {
+  filterResults(text: string = "", max: number=100000, min: number=0) {
     if(!text) this.filteredResults = this.productPropertyList;
 
     this.filteredResults = this.productPropertyList.filter(
       product => product?.name.toLowerCase().includes(text.toLowerCase()));
+
+    this.filteredResults = this.productPropertyList.filter(
+      product => product?.price < max && product?.price > min);
     
     console.log(text + " filtered");
+
+      this.router.navigate(['/filtered-page']);
   } 
 
-  filterByRange(max: number, min: number=0){
-    this.filteredResults = this.productPropertyList.filter(
-      product => product?.price < max && product?.price > min)
-  }
 }

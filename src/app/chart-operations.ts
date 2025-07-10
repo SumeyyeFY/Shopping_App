@@ -1,34 +1,67 @@
-import { Injectable, inject, OnInit, Input } from '@angular/core';
+import { Injectable, inject, OnInit, OnDestroy, Input } from '@angular/core';
 import { ProductProperties } from './product-properties';
 import { ProductInfo } from './product-info';
-import { Observable, switchMap, map, forkJoin } from 'rxjs';
+import { Observable, Subscription, switchMap, interval, startWith, map, forkJoin } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChartOperations implements OnInit {
+export class ChartOperations implements OnInit, OnDestroy {
   @Input() productId!: number;
   @Input() shopName!: number;
   addedProductProperties: ProductProperties[] = [];
+  addedIds: number[] = [];
   purchaseMap: Map<number, number>;
   productInfo: ProductInfo = inject(ProductInfo);
   numberOfProducts: number;
   chartTotal: number;
+  products$: Observable<ProductProperties[] | []>;
   product: ProductProperties | undefined;
+  subscription: Subscription;
 
   constructor() {
     this.purchaseMap = new Map<number, number>;
     this.chartTotal = 0;
     this.numberOfProducts = 0;
+    this.products$ = this.productInfo.getAllProductProperties();
+
+    this.subscription = this.products$.subscribe(
+      (data) => {
+        this.addedProductProperties = data;
+        this.addedIds = Array.from(this.purchaseMap.keys());
+
+        this.addedProductProperties = this.addedProductProperties.filter(product =>
+          this.addedIds.includes(product.id));
+      });
   }
 
   ngOnInit(): void {
-    if (this.productId) {
+    /*if (this.productId) {
       this.productInfo.getProductPropertiesById(this.productId).subscribe(
         (data) => {
           this.product = data;
         }
       )
+    }*/
+
+    this.products$ = interval(500).pipe(
+      startWith(0),
+      switchMap(() => this.productInfo.getAllProductProperties())
+    );
+
+    this.subscription = this.products$.subscribe(
+      (data) => {
+        this.addedProductProperties = data;
+        this.addedIds = Array.from(this.purchaseMap.keys());
+
+        this.addedProductProperties = this.addedProductProperties.filter(product =>
+          this.addedIds.includes(product.id));
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 
@@ -92,62 +125,25 @@ export class ChartOperations implements OnInit {
     this.product = undefined;
   }
 
-  /**
-   * Adds quantities from a Map (productId -> quantityToReturn) back to product stock.
-   *
-   * @param itemsToReturn A Map where key is productId and value is the quantity to add back.
-   * @returns An Observable that completes when all updates are processed.
-   */
-  addQuantitiesToStock(): Observable<ProductProperties[]> {
-    const updateObservables: Observable<ProductProperties | undefined>[] = [];
-
-    this.purchaseMap.forEach((quantityToReturn, productId) => {
-      const updateObservable = this.productInfo.getProductPropertiesById(productId).pipe(
-        switchMap(product => {
-          if (product) {
-            const newQuantity = product.avaliableNumber + quantityToReturn;
-            const updatedProduct: ProductProperties = { ...product, avaliableNumber: newQuantity };
-            return this.productInfo.updateProduct(updatedProduct);
-          } else {
-            console.warn(`Product with ID ${productId} not found. Cannot add quantity back to stock.`);
-            return new Observable<ProductProperties | undefined>(observer => {
-              observer.next(undefined);
-              observer.complete();
-            });
-          }
-        })
-      );
-      updateObservables.push(updateObservable);
-    });
-
-    console.log("cleared");
-    return forkJoin(updateObservables).pipe(
-      map(results => results.filter(p => p !== undefined) as ProductProperties[]) // Filter out undefined results
-    );
-  }
-
   removeAllProducts() { //Returns back to stock
     const keys = Array.from(this.purchaseMap.keys());
     var length = keys.length;
 
     this.purchaseMap.forEach((quantity, id) => {
       if (id) {
-        console.log("id: " + id);
-        console.log("quantity: " + quantity);
         this.productInfo.getProductPropertiesById(id).subscribe(
           (data) => {
             if (data) {
               this.product = data;
-              console.log("data: " + data);
-              console.log("product: " + this.product);
 
               if (this.product) {
-                console.log("avNum befotre: " + this.product.avaliableNumber);
-                console.log("quantity: " + quantity);
                 const newNumber = this.product.avaliableNumber += quantity;
-                console.log("avNum after: " + this.product.avaliableNumber);
 
                 const dataToUpdate: Partial<ProductProperties> = {
+                  photo: this.product.photo,
+                  name: this.product.name,
+                  shop: this.product.shop,
+                  price: this.product.price,
                   avaliableNumber: newNumber
                 };
 
@@ -155,22 +151,18 @@ export class ChartOperations implements OnInit {
                 this.productInfo.updateDataItem(this.product.id, dataToUpdate).subscribe(
                   (response) => {
                     avNumAfter = response.avaliableNumber;
-                    console.log("updated: " + avNumAfter);
-                  }
-                )
+                  });
               }
             }
-          }
-        )
+          });
       }
-    })
+    });
 
     this.addedProductProperties = [];
     this.chartTotal = 0;
     this.numberOfProducts = 0;
     this.purchaseMap.clear();
     console.log("All removed");
-
   }
 
   buyProducts() {

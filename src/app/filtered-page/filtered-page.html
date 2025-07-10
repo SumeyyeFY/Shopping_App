@@ -1,6 +1,5 @@
-<section *ngIf="products$ | async as productProperties">
-        <button [routerLink]="['/filter-page']">Filter</button>
-</section>
+<button [routerLink]="['/filter-page']">Filter</button>
+
 <section class="results">
     <app-product *ngFor="let productProperties of filteredResults" 
         [productProperties]="productProperties"></app-product>

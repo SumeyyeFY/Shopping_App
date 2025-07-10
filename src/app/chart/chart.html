@@ -8,7 +8,7 @@
     <a *ngIf="numberOfProducts != 0" [routerLink]="['/pre-checkout']">Proceed to checkout</a>
 </section>
 <section class="chart-products">
-    <app-product *ngFor="let productProperties of addedProductProperties" [productProperties]="productProperties">
+    <app-product *ngFor="let productProperties of chartOperator.addedProductProperties" [productProperties]="productProperties">
         <form>
             <button class="primary" type="button"
                 (click)="chartOperator.removeFromChart(productProperties.id)">Remove</button>
