@@ -1,9 +1,9 @@
 <p>filter-page works!</p>
 <section class="filtering-choices">
-    <input type="text" placeholder="Filter" #filter>
+    <input type="text" placeholder="Filter" #text>
 
     <input type="number" placeholder="max" #max>
     <input type="number" placeholder="min" #min>
 
-    <button (click)="filterResults(filter.value, +max, +min)">Filter</button>
+    <button (click)="[filterResults(text.value, +max.value, +min.value)]">Filter</button>
 </section>

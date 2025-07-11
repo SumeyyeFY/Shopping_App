@@ -48,5 +48,10 @@ export const routes: Routes = [
         path: "filtered-page",
         component: FilteredPage,
         title: "Filtered Page"
+    },
+    {
+        path: "filtered-page/:text/:max/:min",
+        component: FilteredPage,
+        title: "Filtered Page"
     }
 ];

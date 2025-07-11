@@ -5,7 +5,7 @@
       "name": "Sneakers",
       "shop": "New Shoes",
       "price": 100,
-      "avaliableNumber": 33,
+      "avaliableNumber": 13,
       "id": "0"
     },
     {
@@ -13,7 +13,7 @@
       "name": "Dress",
       "shop": "Clothing com",
       "price": 200,
-      "avaliableNumber": 81,
+      "avaliableNumber": 76,
       "id": "2"
     },
     {
@@ -21,7 +21,7 @@
       "name": "Heels",
       "shop": "New Shoes",
       "price": 100,
-      "avaliableNumber": 69,
+      "avaliableNumber": 65,
       "id": "3"
     },
     {
@@ -38,7 +38,7 @@
       "name": "Tshirt",
       "shop": "Clothing com",
       "price": 200,
-      "avaliableNumber": 75
+      "avaliableNumber": 67
     }
   ]
 }

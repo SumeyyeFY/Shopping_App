@@ -1,5 +1,5 @@
 <h2> {{shopName}} </h2>
-<section class="products">
-    <app-product *ngFor="let productProperty of productPropertiesList" 
+<section class="products" *ngIf="products$ | async as products">
+    <app-product *ngFor="let productProperty of shopProducts" 
     [productProperties]="productProperty"></app-product>
 </section>

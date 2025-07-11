@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductProperties } from '../product-properties';
 import { Product } from '../product/product';
